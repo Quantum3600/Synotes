@@ -20,7 +20,7 @@ I’ve always used Notepad for fast scribbles and quick code snippets—but over
 
 **Synotes** is my attempt at a **small, fast notes app** that **syncs between Desktop and Android**, so you can keep a simple workflow without running a stack of heavyweight programs.
 
-> **Status:** Work in progress. Sync is still evolving—Firebase support for KMP is currently a limitation.
+> **Status:** Work in progress. Google Sign-In is still unimpelmented for Desktop—Firebase support for KMP is currently a limitation.
 
 ---
 
@@ -55,7 +55,7 @@ I’ve always used Notepad for fast scribbles and quick code snippets—but over
 
 - Lightweight note-taking for quick thoughts and code snippets
 - Desktop ↔ Android workflow
-- Sync (WIP)
+- Google Auth for Desktop (WIP)
 
 ---
 
