@@ -1,4 +1,3 @@
-
 <div align="center">
 
 # Synotes
@@ -127,5 +126,4 @@ Contributors are welcome.
 
 ## 📄 License
 
-**TBD** — add a `LICENSE` file and update the badge above.
-
+Licensed under the Apache License, Version 2.0. See [LICENSE](./LICENSE).
