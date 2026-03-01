@@ -61,15 +61,13 @@ I’ve always used Notepad for fast scribbles and quick code snippets—but over
 
 ## 🚀 Running Locally
 
-> If your module names/tasks differ, tell me your module names (e.g. `androidApp`, `composeApp`, `desktopApp`) and I’ll adjust the commands.
-
 ### Prerequisites
 
 - **JDK 17**
 - **Android Studio** (recommended for KMP + Android)
 - Use the Gradle wrapper: `./gradlew`
 
-This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
+###This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
