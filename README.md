@@ -120,7 +120,7 @@ Contributors are welcome.
 
 ## 🗺️ Roadmap / Notes
 
-- Sync is under active development
+- Google Auth for Desktop is under active development
 - Current limitation: **Firebase doesn’t fully support KMP** for the intended approach
 
 ---
