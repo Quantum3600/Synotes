@@ -20,6 +20,7 @@ kotlin {
     }
     
     jvm()
+
     
     sourceSets {
         androidMain.dependencies {
@@ -64,11 +65,15 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "com.trishit.synotes.MainKt"
+        javaHome = System.getenv("JAVA_HOME")
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "com.trishit.synotes"
             packageVersion = "1.0.0"
+            jvmArgs(
+                "-Dapple.awt.application.appearance=system"
+            )
         }
     }
 }

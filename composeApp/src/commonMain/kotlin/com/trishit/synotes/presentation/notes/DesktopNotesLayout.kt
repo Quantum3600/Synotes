@@ -1,21 +1,23 @@
 package com.trishit.synotes.presentation.notes
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.trishit.synotes.domain.model.Note
+import com.trishit.synotes.WindowDraggableArea
 import com.trishit.synotes.domain.model.User
 import com.trishit.synotes.domain.repository.NoteRepository
+import kotlin.time.Clock
 
 @Composable
 fun DesktopNotesLayout(
@@ -33,65 +35,104 @@ fun DesktopNotesLayout(
 
     Row(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Title Bar + Tabs
-            Surface(
-                tonalElevation = 2.dp,
+            // Custom Title Bar with Draggable Area
+            WindowDraggableArea(
                 modifier = Modifier.fillMaxWidth().height(48.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically
+                Surface(
+                    tonalElevation = 2.dp,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    // Tabs section (Scrollable)
-                    LazyRow(
-                        modifier = Modifier.weight(1f).fillMaxHeight(),
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        item {
-                            TabItem(
-                                title = "All Notes",
-                                isSelected = selectedTabId == null,
-                                onClick = { selectedTabId = null },
-                                onClose = null
+                        // Window Controls (MacOS Style)
+                        Row(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            val interactionSource = remember { MutableInteractionSource() }
+                            val isHovered by interactionSource.collectIsHoveredAsState()
+
+                            WindowControlButton(
+                                color = Color(0xFFFF5F56), // Red
+                                icon = Icons.Default.Close,
+                                isHovered = isHovered,
+                                onClick = onClose,
+                                interactionSource = interactionSource
+                            )
+                            WindowControlButton(
+                                color = Color(0xFFFFBD2E), // Yellow
+                                icon = Icons.Default.HorizontalRule,
+                                isHovered = isHovered,
+                                onClick = onMinimize,
+                                interactionSource = interactionSource
+                            )
+                            WindowControlButton(
+                                color = Color(0xFF27C93F), // Green
+                                icon = Icons.Default.Square,
+                                isHovered = isHovered,
+                                onClick = onMaximize,
+                                interactionSource = interactionSource
                             )
                         }
 
-                        items(openTabs) { noteId ->
-                            val note = notes.find { it.id == noteId }
-                            TabItem(
-                                title = note?.title?.ifEmpty { "Untitled" } ?: "Loading...",
-                                isSelected = selectedTabId == noteId,
-                                onClick = { selectedTabId = noteId },
-                                onClose = {
-                                    openTabs = openTabs - noteId
-                                    if (selectedTabId == noteId) {
-                                        selectedTabId = null
-                                    }
+                        // Window Title / Logo
+                        Text(
+                            "Synotes",
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        // Tabs section
+                        val tabsScrollState = rememberScrollState()
+                        Box(modifier = Modifier.weight(1f).fillMaxHeight()) {
+                            Row(
+                                modifier = Modifier.fillMaxHeight().horizontalScroll(tabsScrollState),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TabItem(
+                                    title = "All Notes",
+                                    isSelected = selectedTabId == null,
+                                    onClick = { selectedTabId = null },
+                                    onClose = null
+                                )
+
+                                openTabs.forEach { noteId ->
+                                    val note = notes.find { it.id == noteId }
+                                    TabItem(
+                                        title = if (noteId.startsWith("new_note")) "New Note" else (note?.title?.ifEmpty { "Untitled" } ?: "Loading..."),
+                                        isSelected = selectedTabId == noteId,
+                                        onClick = { selectedTabId = noteId },
+                                        onClose = {
+                                            val newTabs = openTabs.toMutableList()
+                                            newTabs.remove(noteId)
+                                            openTabs = newTabs
+                                            if (selectedTabId == noteId) {
+                                                selectedTabId = null
+                                            }
+                                        }
+                                    )
                                 }
-                            )
-                        }
 
-                        item {
-                            IconButton(onClick = { /* New note logic */ }) {
-                                Icon(Icons.Default.Add, contentDescription = "New Note")
+                                IconButton(onClick = { 
+                                    val newId = "new_note_${Clock.System.now().toEpochMilliseconds()}"
+                                    openTabs = openTabs + newId
+                                    selectedTabId = newId
+                                }) {
+                                    Icon(Icons.Default.Add, contentDescription = "New Note")
+                                }
                             }
                         }
-                    }
-
-                    // Window Controls
-                    Row(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        WindowControlButton(Icons.Default.Remove, "Minimize", onMinimize)
-                        WindowControlButton(Icons.Default.CropSquare, "Maximize", onMaximize)
-                        WindowControlButton(Icons.Default.Close, "Close", onClose, isClose = true)
                     }
                 }
             }
 
             // Screen Content
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxSize().weight(1f)) {
                 if (selectedTabId == null) {
                     NotesScreen(
                         viewModel = notesViewModel,
@@ -102,14 +143,33 @@ fun DesktopNotesLayout(
                                     openTabs = openTabs + noteId
                                 }
                                 selectedTabId = noteId
+                            } else {
+                                // FAB clicked
+                                val newId = "new_note_${Clock.System.now().toEpochMilliseconds()}"
+                                openTabs = openTabs + newId
+                                selectedTabId = newId
                             }
                         },
                         onLogout = onLogout
                     )
                 } else {
+                    val actualNoteId = if (selectedTabId!!.startsWith("new_note")) null else selectedTabId
                     val detailViewModel = remember(selectedTabId) {
-                        NoteDetailViewModel(noteRepository, user.uid, selectedTabId)
+                        NoteDetailViewModel(noteRepository, user.uid, actualNoteId)
                     }
+                    
+                    val currentNote by detailViewModel.note.collectAsState()
+                    
+                    // If a new note is saved, update the tab ID to the real Firestore ID
+                    LaunchedEffect(currentNote?.id) {
+                        val savedId = currentNote?.id
+                        if (savedId != null && savedId.isNotEmpty() && selectedTabId!!.startsWith("new_note")) {
+                            val oldId = selectedTabId!!
+                            openTabs = openTabs.map { if (it == oldId) savedId else it }
+                            selectedTabId = savedId
+                        }
+                    }
+
                     NoteDetailScreen(
                         viewModel = detailViewModel,
                         onBack = { selectedTabId = null }
@@ -122,19 +182,32 @@ fun DesktopNotesLayout(
 
 @Composable
 fun WindowControlButton(
+    color: Color,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
-    contentDescription: String,
+    isHovered: Boolean,
     onClick: (() -> Unit)?,
-    isClose: Boolean = false
+    interactionSource: MutableInteractionSource
 ) {
-    IconButton(
-        onClick = { onClick?.invoke() },
-        modifier = Modifier.size(48.dp),
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = MaterialTheme.colorScheme.onSurface
-        )
+    Box(
+        modifier = Modifier
+            .size(12.dp)
+            .clip(CircleShape)
+            .background(color)
+            .clickable(
+                onClick = { onClick?.invoke() },
+                interactionSource = interactionSource,
+                indication = null
+            ),
+        contentAlignment = Alignment.Center
     ) {
-        Icon(icon, contentDescription = contentDescription, modifier = Modifier.size(18.dp))
+        if (isHovered) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(8.dp),
+                tint = Color.Black.copy(alpha = 0.5f)
+            )
+        }
     }
 }
 
@@ -160,7 +233,7 @@ fun TabItem(
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelSmall,
             color = contentColor,
             maxLines = 1,
             modifier = Modifier.weight(1f)
