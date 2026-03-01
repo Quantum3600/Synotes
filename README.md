@@ -1,4 +1,3 @@
-# Synotes
 
 <div align="center">
 
@@ -70,45 +69,6 @@ I’ve always used Notepad for fast scribbles and quick code snippets—but over
 - **Android Studio** (recommended for KMP + Android)
 - Use the Gradle wrapper: `./gradlew`
 
-### Android
-
-Open the project in **Android Studio**, pick the Android run configuration, and run on an emulator/device.
-
-CLI (common in many KMP templates; may vary by module name):
-
-```bash
-./gradlew :androidApp:installDebug
-```
-
-### Desktop
-
-Run the desktop app (common in many KMP templates; may vary by module name):
-
-```bash
-./gradlew :desktopApp:run
-```
-
----
-
-## 🤝 Contributing
-
-Contributors are welcome.
-
-- Open an issue for bugs / feature requests
-- PRs are appreciated (small, focused PRs are easiest to review)
-
----
-
-## 🗺️ Roadmap / Notes
-
-- Sync is under active development
-- Current limitation: **Firebase doesn’t fully support KMP** for the intended approach
-
----
-
-## 📄 License
-
-**TBD** — add a `LICENSE` file and update the badge above.
 This is a Kotlin Multiplatform project targeting Android, Desktop (JVM).
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
@@ -149,3 +109,25 @@ in your IDE’s toolbar or run it directly from the terminal:
 ---
 
 Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+---
+
+## 🤝 Contributing
+
+Contributors are welcome.
+
+- Open an issue for bugs / feature requests
+- PRs are appreciated (small, focused PRs are easiest to review)
+
+---
+
+## 🗺️ Roadmap / Notes
+
+- Sync is under active development
+- Current limitation: **Firebase doesn’t fully support KMP** for the intended approach
+
+---
+
+## 📄 License
+
+**TBD** — add a `LICENSE` file and update the badge above.
+
