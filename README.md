@@ -10,7 +10,7 @@ A lightweight, synced notepad for low-spec setups.
 ![Platform](https://img.shields.io/badge/platform-Android%20%7C%20Desktop-blue)
 ![Kotlin](https://img.shields.io/badge/Kotlin-KMP-7F52FF?logo=kotlin&logoColor=white)
 ![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-4285F4?logo=jetpackcompose&logoColor=white)
-![License](https://img.shields.io/badge/license-TBD-lightgrey)
+![License](https://img.shields.io/badge/license-Apache-lightgrey)
 
 </div>
 
