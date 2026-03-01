@@ -39,14 +39,14 @@ I’ve always used Notepad for fast scribbles and quick code snippets—but over
 
 ### Android
 <p float="left">
-  <img src=".github/assets/android-1.png" width="240" alt="Android screenshot 1" />
-  <img src=".github/assets/android-2.png" width="240" alt="Android screenshot 2" />
+  <img src=".github/Screenshot_2026-03-01-20-20-56-771_com.trishit.synotes.jpg" width="240" alt="Android screenshot 1" />
+  <img src=".github/Screenshot_2026-03-01-21-09-03-064_com.trishit.synotes.jpg" width="240" alt="Android screenshot 2" />
 </p>
 
 ### Desktop
 <p float="left">
-  <img src=".github/assets/desktop-1.png" width="520" alt="Desktop screenshot 1" />
-  <img src=".github/assets/desktop-2.png" width="520" alt="Desktop screenshot 2" />
+  <img src=".github/Screenshot 2026-03-01 202225.png" width="520" alt="Desktop screenshot 1" />
+  <img src=".github/Screenshot 2026-03-01 211234.png" width="520" alt="Desktop screenshot 2" />
 </p>
 
 ---
