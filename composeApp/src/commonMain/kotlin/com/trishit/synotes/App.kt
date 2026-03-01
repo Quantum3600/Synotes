@@ -24,7 +24,10 @@ sealed class Screen {
 fun App(
     onMinimize: (() -> Unit)? = null,
     onMaximize: (() -> Unit)? = null,
-    onClose: (() -> Unit)? = null
+    onClose: (() -> Unit)? = null,
+    windowDraggableArea: @Composable (Modifier, @Composable () -> Unit) -> Unit = { m, c -> 
+        androidx.compose.foundation.layout.Box(m) { c() } 
+    }
 ) {
     val authRepository = remember { AuthRepositoryImpl(Firebase.auth) }
     val noteRepository = remember { NoteRepositoryImpl(Firebase.firestore) }
@@ -39,48 +42,52 @@ fun App(
     }
 
     SynotesTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize()
+        CompositionLocalProvider(
+            LocalWindowDraggableArea provides windowDraggableArea
         ) {
-            when (val screen = currentScreen) {
-                is Screen.Login -> LoginScreen(viewModel = authViewModel)
-                is Screen.Notes -> {
-                    currentUser?.let { user ->
-                        val notesViewModel = remember(user.uid) { 
-                            NotesViewModel(noteRepository, user.uid) 
-                        }
-                        
-                        if (platform.contains("Java") || platform.contains("Desktop")) {
-                            DesktopNotesLayout(
-                                notesViewModel = notesViewModel,
-                                user = user,
-                                noteRepository = noteRepository,
-                                onLogout = { authViewModel.signOut() },
-                                onMinimize = onMinimize,
-                                onMaximize = onMaximize,
-                                onClose = onClose
-                            )
-                        } else {
-                            NotesScreen(
-                                viewModel = notesViewModel,
-                                user = user,
-                                onNoteClick = { noteId ->
-                                    currentScreen = Screen.NoteDetail(noteId)
-                                },
-                                onLogout = { authViewModel.signOut() }
-                            )
+            Surface(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                when (val screen = currentScreen) {
+                    is Screen.Login -> LoginScreen(viewModel = authViewModel)
+                    is Screen.Notes -> {
+                        currentUser?.let { user ->
+                            val notesViewModel = remember(user.uid) { 
+                                NotesViewModel(noteRepository, user.uid) 
+                            }
+                            
+                            if (platform.contains("Java") || platform.contains("Desktop")) {
+                                DesktopNotesLayout(
+                                    notesViewModel = notesViewModel,
+                                    user = user,
+                                    noteRepository = noteRepository,
+                                    onLogout = { authViewModel.signOut() },
+                                    onMinimize = onMinimize,
+                                    onMaximize = onMaximize,
+                                    onClose = onClose
+                                )
+                            } else {
+                                NotesScreen(
+                                    viewModel = notesViewModel,
+                                    user = user,
+                                    onNoteClick = { noteId ->
+                                        currentScreen = Screen.NoteDetail(noteId)
+                                    },
+                                    onLogout = { authViewModel.signOut() }
+                                )
+                            }
                         }
                     }
-                }
-                is Screen.NoteDetail -> {
-                    currentUser?.let { user ->
-                        val noteDetailViewModel = remember(screen.noteId) {
-                            NoteDetailViewModel(noteRepository, user.uid, screen.noteId)
+                    is Screen.NoteDetail -> {
+                        currentUser?.let { user ->
+                            val noteDetailViewModel = remember(screen.noteId) {
+                                NoteDetailViewModel(noteRepository, user.uid, screen.noteId)
+                            }
+                            NoteDetailScreen(
+                                viewModel = noteDetailViewModel,
+                                onBack = { currentScreen = Screen.Notes }
+                            )
                         }
-                        NoteDetailScreen(
-                            viewModel = noteDetailViewModel,
-                            onBack = { currentScreen = Screen.Notes }
-                        )
                     }
                 }
             }

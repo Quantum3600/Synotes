@@ -43,6 +43,8 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val contentModifier = if (isDesktop) Modifier.widthIn(max = 500.dp) else Modifier.fillMaxWidth()
+
         if (user != null) {
             Text(
                 text = "Welcome back!",
@@ -64,7 +66,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(32.dp))
             Button(
                 onClick = { viewModel.signOut() },
-                modifier = Modifier.fillMaxWidth(0.7f)
+                modifier = Modifier.widthIn(max = 280.dp).fillMaxWidth()
             ) {
                 Text("Sign Out")
             }
@@ -87,7 +89,7 @@ fun LoginScreen(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = contentModifier,
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true
@@ -99,7 +101,7 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = contentModifier,
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                 trailingIcon = {
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -133,7 +135,7 @@ fun LoginScreen(
                         viewModel.signInWithEmail(email, password)
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = contentModifier.height(56.dp),
                 enabled = !uiState.isLoading && email.isNotBlank() && password.isNotBlank()
             ) {
                 if (uiState.isLoading) {
@@ -155,7 +157,7 @@ fun LoginScreen(
 
             OutlinedButton(
                 onClick = { viewModel.signInAnonymously() },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = contentModifier.height(56.dp),
                 enabled = !uiState.isLoading
             ) {
                 Text("Continue as Guest")
@@ -163,7 +165,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = contentModifier.padding(vertical = 8.dp))
             Text("OR", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -172,7 +174,7 @@ fun LoginScreen(
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.widthIn(max = 800.dp)
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),

@@ -1,9 +1,9 @@
 package com.trishit.synotes
 
 import android.app.Application
+import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
-import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.google.firebase.FirebasePlatform
@@ -60,7 +60,10 @@ fun main() {
                         WindowPlacement.Maximized
                     }
                 },
-                onClose = { exitApplication() }
+                onClose = { exitApplication() },
+                windowDraggableArea = { modifier, content ->
+                    WindowDraggableArea(modifier, content)
+                }
             )
         }
     }
