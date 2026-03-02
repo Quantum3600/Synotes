@@ -35,16 +35,16 @@ jobs:
 
       - name: Generate Constants.kt from secrets
         env:
-          FIREBASE_API_KEY: ${{ secrets.API_KEY }}
-          FIREBASE_AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
-          FIREBASE_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          FIREBASE_STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
-          FIREBASE_APP_ID: ${{ secrets.APP_ID }}
-          GOOGLE_WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
+          API_KEY: ${{ secrets.API_KEY }}
+          AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          APP_ID: ${{ secrets.APP_ID }}
+          WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
         run: |
           # Fail early if any required secret is missing
           MISSING=""
-          for VAR in FIREBASE_API_KEY FIREBASE_AUTH_DOMAIN FIREBASE_PROJECT_ID FIREBASE_STORAGE_BUCKET FIREBASE_APP_ID GOOGLE_WEB_CLIENT_ID; do
+          for VAR in API_KEY AUTH_DOMAIN PROJECT_ID STORAGE_BUCKET APP_ID WEB_CLIENT_ID; do
             [ -z "${!VAR}" ] && MISSING="$MISSING $VAR"
           done
           if [ -n "$MISSING" ]; then
@@ -55,12 +55,12 @@ jobs:
             echo "package com.trishit.synotes"
             echo ""
             echo "object Constants {"
-            echo "    const val API_KEY = \"$FIREBASE_API_KEY\""
-            echo "    const val AUTH_DOMAIN = \"$FIREBASE_AUTH_DOMAIN\""
-            echo "    const val PROJECT_ID = \"$FIREBASE_PROJECT_ID\""
-            echo "    const val STORAGE_BUCKET = \"$FIREBASE_STORAGE_BUCKET\""
-            echo "    const val APP_ID = \"$FIREBASE_APP_ID\""
-            echo "    const val WEB_CLIENT_ID = \"$GOOGLE_WEB_CLIENT_ID\""
+            echo "    const val API_KEY = \"$API_KEY\""
+            echo "    const val AUTH_DOMAIN = \"$AUTH_DOMAIN\""
+            echo "    const val PROJECT_ID = \"$PROJECT_ID\""
+            echo "    const val STORAGE_BUCKET = \"$STORAGE_BUCKET\""
+            echo "    const val APP_ID = \"$APP_ID\""
+            echo "    const val WEB_CLIENT_ID = \"$WEB_CLIENT_ID\""
             echo "}"
           } > "$CONSTANTS_KT"
 

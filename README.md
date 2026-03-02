@@ -137,12 +137,12 @@ The workflow in `.github/workflows/deploy-pages.yml` builds the Wasm bundle and 
 
    | Secret name | Where to find it |
    |---|---|
-   | `FIREBASE_API_KEY` | Firebase Console → Project Settings → Web API key |
-   | `FIREBASE_AUTH_DOMAIN` | `<your-project-id>.firebaseapp.com` |
-   | `FIREBASE_PROJECT_ID` | Firebase Console → Project Settings → Project ID |
-   | `FIREBASE_STORAGE_BUCKET` | Firebase Console → Project Settings → Storage bucket |
-   | `FIREBASE_APP_ID` | Firebase Console → Project Settings → App ID |
-   | `GOOGLE_WEB_CLIENT_ID` | Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client ID |
+   | `API_KEY` | Firebase Console → Project Settings → Web API key |
+   | `AUTH_DOMAIN` | `<your-project-id>.firebaseapp.com` |
+   | `PROJECT_ID` | Firebase Console → Project Settings → Project ID |
+   | `STORAGE_BUCKET` | Firebase Console → Project Settings → Storage bucket |
+   | `APP_ID` | Firebase Console → Project Settings → App ID |
+   | `WEB_CLIENT_ID` | Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client ID |
 
 ### Deploying
 
