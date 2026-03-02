@@ -6,7 +6,7 @@ A lightweight, synced notepad for low-spec setups.
 
 <!-- Badges -->
 ![Status](https://img.shields.io/badge/status-WIP-orange)
-![Platform](https://img.shields.io/badge/platform-Android%20%7C%20Desktop-blue)
+![Platform](https://img.shields.io/badge/platform-Android%20%7C%20Desktop%20%7C%20Web-blue)
 ![Kotlin](https://img.shields.io/badge/Kotlin-KMP-7F52FF?logo=kotlin&logoColor=white)
 ![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-4285F4?logo=jetpackcompose&logoColor=white)
 ![License](https://img.shields.io/badge/license-Apache-lightgrey)
@@ -102,6 +102,55 @@ in your IDE’s toolbar or run it directly from the terminal:
   ```shell
   .\gradlew.bat :composeApp:run
   ```
+
+### Build and Run Web (Wasm) Application
+
+To build and run the development server:
+- on macOS/Linux
+  ```shell
+  ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
+  ```
+- on Windows
+  ```shell
+  .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
+  ```
+
+To produce a production bundle:
+```shell
+./gradlew :composeApp:wasmJsBrowserDistribution
+# Output: composeApp/build/dist/wasmJs/productionExecutable/
+```
+
+---
+
+## 🌐 Deploying to GitHub Pages
+
+The workflow in `.github/workflows/deploy-pages.yml` builds the Wasm bundle and deploys it to GitHub Pages automatically.
+
+### One-time setup (do this once)
+
+1. **Enable GitHub Pages** in your repository:  
+   Go to **Settings → Pages → Build and deployment → Source** and select **"GitHub Actions"**.
+
+2. **Add repository secrets**  
+   Go to **Settings → Secrets and variables → Actions → New repository secret** and add each of the following:
+
+   | Secret name | Where to find it |
+   |---|---|
+   | `API_KEY` | Firebase Console → Project Settings → Web API key |
+   | `AUTH_DOMAIN` | `<your-project-id>.firebaseapp.com` |
+   | `PROJECT_ID` | Firebase Console → Project Settings → Project ID |
+   | `STORAGE_BUCKET` | Firebase Console → Project Settings → Storage bucket |
+   | `APP_ID` | Firebase Console → Project Settings → App ID |
+   | `WEB_CLIENT_ID` | Google Cloud Console → APIs & Services → Credentials → OAuth 2.0 Client ID |
+
+### Deploying
+
+- **Automatic:** Every push to `master` triggers a build and deploy automatically.
+- **Manual:** Go to **Actions → "Build and Deploy to GitHub Pages" → Run workflow** and click **Run workflow**.
+
+After the workflow completes (≈ 5–10 min), your app will be live at:  
+`https://<your-github-username>.github.io/Synotes/`
 
 ---
 

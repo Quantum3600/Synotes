@@ -1,0 +1,84 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [copilot/add-kotlin-wasm-target]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  CONSTANTS_KT: composeApp/src/commonMain/kotlin/com/trishit/synotes/Constants.kt
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Generate Constants.kt from secrets
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          AUTH_DOMAIN: ${{ secrets.AUTH_DOMAIN }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          STORAGE_BUCKET: ${{ secrets.STORAGE_BUCKET }}
+          APP_ID: ${{ secrets.APP_ID }}
+          WEB_CLIENT_ID: ${{ secrets.WEB_CLIENT_ID }}
+        run: |
+          # Fail early if any required secret is missing
+          MISSING=""
+          for VAR in API_KEY AUTH_DOMAIN PROJECT_ID STORAGE_BUCKET APP_ID WEB_CLIENT_ID; do
+            [ -z "${!VAR}" ] && MISSING="$MISSING $VAR"
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing required secrets:$MISSING"
+            exit 1
+          fi
+          {
+            echo "package com.trishit.synotes"
+            echo ""
+            echo "object Constants {"
+            echo "    const val API_KEY = \"$API_KEY\""
+            echo "    const val AUTH_DOMAIN = \"$AUTH_DOMAIN\""
+            echo "    const val PROJECT_ID = \"$PROJECT_ID\""
+            echo "    const val STORAGE_BUCKET = \"$STORAGE_BUCKET\""
+            echo "    const val APP_ID = \"$APP_ID\""
+            echo "    const val WEB_CLIENT_ID = \"$WEB_CLIENT_ID\""
+            echo "}"
+          } > "$CONSTANTS_KT"
+
+      - name: Build Wasm distribution
+        run: ./gradlew :composeApp:wasmJsBrowserDistribution
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: composeApp/build/dist/wasmJs/productionExecutable
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

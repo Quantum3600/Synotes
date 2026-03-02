@@ -28,8 +28,9 @@ fun LoginScreen(
 ) {
     val user by viewModel.currentUser.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
-    val platform = remember { getPlatform().name }
-    val isDesktop = platform.contains("Java") || platform.contains("Desktop")
+    val platform = remember { getPlatform() }
+    val isWideLayout = platform.isWideLayout
+    val isDesktop = platform.isDesktop
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -43,7 +44,7 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val contentModifier = if (isDesktop) Modifier.widthIn(max = 500.dp) else Modifier.fillMaxWidth()
+        val contentModifier = if (isWideLayout) Modifier.widthIn(max = 500.dp) else Modifier.fillMaxWidth()
 
         if (user != null) {
             Text(

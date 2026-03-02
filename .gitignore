@@ -17,3 +17,5 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+# Firebase credentials — copy Constants.kt from Constants.kt.example and fill in your values
+composeApp/src/commonMain/kotlin/com/trishit/synotes/Constants.kt
