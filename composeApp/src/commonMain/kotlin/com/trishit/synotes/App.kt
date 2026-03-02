@@ -35,7 +35,8 @@ fun App(
     
     val currentUser by authViewModel.currentUser.collectAsState(null)
     var currentScreen by remember { mutableStateOf<Screen>(Screen.Login) }
-    val platform = remember { getPlatform().name }
+    val platform = remember { getPlatform() }
+
 
     LaunchedEffect(currentUser) {
         currentScreen = if (currentUser != null) Screen.Notes else Screen.Login
@@ -56,7 +57,7 @@ fun App(
                                 NotesViewModel(noteRepository, user.uid) 
                             }
                             
-                            if (platform.contains("Java") || platform.contains("Desktop")) {
+                            if (platform.isWideLayout) {
                                 DesktopNotesLayout(
                                     notesViewModel = notesViewModel,
                                     user = user,

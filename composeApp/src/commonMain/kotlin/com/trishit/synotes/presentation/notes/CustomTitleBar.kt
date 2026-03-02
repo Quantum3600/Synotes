@@ -41,37 +41,38 @@ fun CustomTitleBar(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Window Controls (MacOS Style)
-            Row(
-                modifier = Modifier.padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val interactionSource = remember { MutableInteractionSource() }
-                val isHovered by interactionSource.collectIsHoveredAsState()
+            // Window Controls (MacOS Style) — only shown when at least one handler is provided
+            if (onClose != null || onMaximize != null || onMinimize != null) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    val interactionSource = remember { MutableInteractionSource() }
+                    val isHovered by interactionSource.collectIsHoveredAsState()
 
-                WindowControlButton(
-                    color = Color(0xFFFF5F56), // Red
-                    icon = Icons.Default.Close,
-                    isHovered = isHovered,
-                    onClick = onClose,
-                    interactionSource = interactionSource
-                )
-                WindowControlButton(
+                    WindowControlButton(
+                        color = Color(0xFFFF5F56), // Red
+                        icon = Icons.Default.Close,
+                        isHovered = isHovered,
+                        onClick = onClose,
+                        interactionSource = interactionSource
+                    )
+                    WindowControlButton(
                         color = Color(0xFF27C93F), // Green
-                icon = Icons.Default.CropSquare,
-                isHovered = isHovered,
-                onClick = onMaximize,
-                interactionSource = interactionSource
-                )
-                WindowControlButton(
-                    color = Color(0xFFFFBD2E), // Yellow
-                    icon = Icons.Default.HorizontalRule,
-                    isHovered = isHovered,
-                    onClick = onMinimize,
-                    interactionSource = interactionSource
-                )
-
+                        icon = Icons.Default.CropSquare,
+                        isHovered = isHovered,
+                        onClick = onMaximize,
+                        interactionSource = interactionSource
+                    )
+                    WindowControlButton(
+                        color = Color(0xFFFFBD2E), // Yellow
+                        icon = Icons.Default.HorizontalRule,
+                        isHovered = isHovered,
+                        onClick = onMinimize,
+                        interactionSource = interactionSource
+                    )
+                }
             }
 
             // Window Title / Logo

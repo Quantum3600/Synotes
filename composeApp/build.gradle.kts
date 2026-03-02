@@ -21,7 +21,15 @@ kotlin {
     
     jvm()
 
-    
+    wasmJs {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeApp.js"
+            }
+        }
+        binaries.executable()
+    }
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.kotlinx.coroutines.android)

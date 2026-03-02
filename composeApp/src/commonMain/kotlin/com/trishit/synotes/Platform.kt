@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 
 interface Platform {
     val name: String
+    val isDesktop: Boolean get() = name.contains("Java") || name.contains("Desktop")
+    val isWideLayout: Boolean get() = isDesktop || name.contains("Wasm")
 }
 
 expect fun getPlatform(): Platform
