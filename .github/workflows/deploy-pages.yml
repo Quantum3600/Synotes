@@ -65,6 +65,9 @@ jobs:
             echo "}"
           } > "$CONSTANTS_KT"
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+  
       - name: Build Wasm distribution
         run: ./gradlew :composeApp:wasmJsBrowserDistribution
 
