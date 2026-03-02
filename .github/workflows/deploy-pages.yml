@@ -2,7 +2,7 @@ name: Build and Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [copilot/add-kotlin-wasm-target]
   workflow_dispatch:
 
 permissions:
