@@ -1,0 +1,84 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  CONSTANTS_KT: composeApp/src/commonMain/kotlin/com/trishit/synotes/Constants.kt
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Generate Constants.kt from secrets
+        env:
+          FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          GOOGLE_WEB_CLIENT_ID: ${{ secrets.GOOGLE_WEB_CLIENT_ID }}
+        run: |
+          # Fail early if any required secret is missing
+          MISSING=""
+          for VAR in FIREBASE_API_KEY FIREBASE_AUTH_DOMAIN FIREBASE_PROJECT_ID FIREBASE_STORAGE_BUCKET FIREBASE_APP_ID GOOGLE_WEB_CLIENT_ID; do
+            [ -z "${!VAR}" ] && MISSING="$MISSING $VAR"
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing required secrets:$MISSING"
+            exit 1
+          fi
+          {
+            echo "package com.trishit.synotes"
+            echo ""
+            echo "object Constants {"
+            echo "    const val API_KEY = \"$FIREBASE_API_KEY\""
+            echo "    const val AUTH_DOMAIN = \"$FIREBASE_AUTH_DOMAIN\""
+            echo "    const val PROJECT_ID = \"$FIREBASE_PROJECT_ID\""
+            echo "    const val STORAGE_BUCKET = \"$FIREBASE_STORAGE_BUCKET\""
+            echo "    const val APP_ID = \"$FIREBASE_APP_ID\""
+            echo "    const val WEB_CLIENT_ID = \"$GOOGLE_WEB_CLIENT_ID\""
+            echo "}"
+          } > "$CONSTANTS_KT"
+
+      - name: Build Wasm distribution
+        run: ./gradlew :composeApp:wasmJsBrowserDistribution
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: composeApp/build/dist/wasmJs/productionExecutable
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
